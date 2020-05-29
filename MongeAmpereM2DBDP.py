@@ -29,7 +29,7 @@ nTest = 10
 d = 8
 nbNeuron = d + 10
 sigScal =  0.5*np.ones(d)
-muScal = np.array([np.sum(theta*lamb)])
+muScal = np.array([0])
 lamb = 0.5
 
 layerSize= nbNeuron*np.ones((nbLayer,), dtype=np.int32)
