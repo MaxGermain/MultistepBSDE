@@ -30,9 +30,9 @@ class PDEFNLSolve2OptGPU(PDEFNLSolveBaseGPU):
         rescale= sig*np.sqrt(self.TStepGam*iStep)
         normX0 = (dic["XPrev"]- self.xInit - mu*self.TStepGam*iStep)/ rescale
         if (iStep < self.nbStepGam):
-           dic["Gam"]  =self.networkGam.createNetworkWithInitializer(normX0,iStep,ListWeightGam[-1],ListBiasGam[-1], rescale)
+            dic["Gam"]  =self.networkGam.createNetworkWithInitializer(normX0,iStep,ListWeightGam[-1],ListBiasGam[-1], rescale)
         else:
-          dic["Gam"]  = self.networkGam.createNetwork(normX0, iStep, rescale)
+            dic["Gam"]  = self.networkGam.createNetwork(normX0, iStep, rescale)
 
         sqrtDt =  np.sqrt(self.TStepGam)
         XNext = dic["XPrev"] 
@@ -77,8 +77,6 @@ class PDEFNLSolve2OptGPU(PDEFNLSolveBaseGPU):
         dic["Loss"]=    tf.reduce_mean(tf.pow(dic["Gam"]- GamTraj,2))
         dic["train"] = tf.compat.v1.train.AdamOptimizer(learning_rate = dic["LRate"]).minimize(dic["Loss"])
         return dic
-     
-    
 
     # calculate Gamma by conditionnal expectation
     def buildGamStep0(self,   ListWeightUZ , ListBiasUZ, ListWeightGam, ListBiasGam,  Gam0_initializer):
@@ -107,9 +105,7 @@ class PDEFNLSolve2OptGPU(PDEFNLSolveBaseGPU):
             print("len( ListWeightGam)", len( ListWeightGam), " ListWeightUZ " , len(ListWeightUZ), " IPO" , iPosBSDE)
             normX = (XNext- self.xInit - mu*self.TStepGam*iStepLoc)/ (sig*np.sqrt(self.TStepGam*iStepLoc))
             U, Z=self.networkUZ.createNetworkNotTrainable(normX,iStepLoc,ListWeightUZ[iPosBSDE],ListBiasUZ[iPosBSDE])
-            print("CRET")
             Gam =  self.networkGam.createNetworkNotTrainable(normX, iStepLoc,ListWeightGam[-i-1], ListBiasGam[-i-1])
-            print("CREUT")
             driver = self.TStepGam *(0.5*tf.einsum('j,ij->i',tf.constant(sig*sig, dtype=tf.float32),tf.matrix_diag_part(Gam)) -self.model.fDW(iStepLoc*self.TStepGam,XNext,U , Z, Gam))
             
             normXAnti = (XNextAnti- self.xInit - mu*self.TStepGam*iStepLoc)/ (sig*np.sqrt(self.TStepGam*iStepLoc))
@@ -132,4 +128,3 @@ class PDEFNLSolve2OptGPU(PDEFNLSolveBaseGPU):
         dic["Loss"]=    tf.reduce_mean(tf.pow(dic["Gam0"]- GamTraj,2))
         dic["train"] = tf.compat.v1.train.AdamOptimizer(learning_rate = dic["LRate"]).minimize(dic["Loss"])
         return dic    
- 
