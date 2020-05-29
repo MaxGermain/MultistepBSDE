@@ -37,7 +37,7 @@ d = lamb.shape[0] + 1
 nbNeuron = d + 10
 sigScal =  np.concatenate([np.array([1.], dtype=np.float32),gamma]).reshape((d))
 
-muScal = np.concatenate([np.array([0.]),np.zeros((d-1), dtype=np.float32)]).reshape((d))
+muScal = np.concatenate([np.array([np.sum(theta*lamb)]),np.zeros((d-1), dtype=np.float32)]).reshape((d))
 layerSize= nbNeuron*np.ones((nbLayer,), dtype=np.int32)
 
 xyInit= np.concatenate([np.array([1.]),theta])   
